@@ -77,8 +77,11 @@ input type:keyboard {
     # Start your launcher
     bindsym $mod+d exec $menu
 
-bindsym $mod+q exec dolphin
+    bindsym $mod+e exec dolphin
 
+    bindsym $mod+q exec sh -c 'pkill -x quickshell; sleep 0.2; exec quickshell'
+
+    bindsym $mod+i exec ~/dotfiles/install.sh
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -155,7 +158,7 @@ bindsym $mod+q exec dolphin
     # Switch the current container between different layout styles
     bindsym $mod+s layout stacking
     bindsym $mod+w layout tabbed
-    bindsym $mod+e layout toggle split
+    # bindsym $mod+e layout toggle split
 
     # Make the current focus fullscreen
     bindsym $mod+f fullscreen

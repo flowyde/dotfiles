@@ -18,7 +18,7 @@ USER=$(whoami)
 DOTFILES_DIR="$HOME/dotfiles"
 CONFIGS_DIR="$DOTFILES_DIR/configs"
 BACKUP_DIR="$HOME/${USER}_BACKUPS"
-DEPS=("stow" "kitty")
+DEPS=("quickshell" "kitty")
 DOTCONFIG_DIR="$HOME/.config"  # Onde os symlinks serão criados
 
 print "\nSway Rice Installation Process" "$GREEN"
