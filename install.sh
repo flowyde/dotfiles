@@ -40,8 +40,38 @@ if [ ${#missing[@]} -gt 0 ]; then
     exit 1
 fi
 
-# Cria o diretorio de backup se não existir 
+# Cria o diretório de backup se não existir 
 mkdir -p "$BACKUP_DIR"
+
+# Verifica o tamanho total do diretório de backup
+MAX_SIZE=$((10 * 1024)) # 10MB em KB
+
+get_backup_size() {
+    du -s "$BACKUP_DIR" | awk '{print $1}'
+}
+
+current_size=$(get_backup_size)
+
+if [ "$current_size" -gt "$MAX_SIZE" ]; then
+    print "\nBackup folder exceeds 10MB. Cleaning up old backups..." "$RED"
+
+    # Lista os itens mais antigos primeiro
+    while [ "$current_size" -gt "$MAX_SIZE" ]; do
+        oldest_item=$(find "$BACKUP_DIR" -mindepth 1 -maxdepth 1 -printf '%T+ %p\n' | sort | head -n 1 | awk '{print $2}')
+        
+        if [ -z "$oldest_item" ]; then
+            break
+        fi
+
+        rm -rf "$oldest_item"
+        print "Deleted: $oldest_item" "$YELLOW"
+
+        current_size=$(get_backup_size)
+    done
+
+    print "✓ Old backups deleted. Backup folder is now under 10MB." "$GREEN"
+fi
+
 
 # Para cada diretório dentro de dotfiles/configs
 print "\nCopying configurations..." "$YELLOW"
@@ -56,7 +86,7 @@ for dir in $CONFIGS_DIR/*; do
             backup_target="$BACKUP_DIR/$dirname"
             print "Backing up existing $dirname to $backup_target" "$YELLOW"
             
-            # Append timestamp to backup, in case of multiple backups existing.
+            # Append timestamp to backup, in caso de múltiplos backups
             if [ -d "$backup_target" ]; then
                 timestamp=$(date +"%Y%m%d_%H%M%S")
                 backup_target="${backup_target}_${timestamp}"
@@ -66,7 +96,7 @@ for dir in $CONFIGS_DIR/*; do
             print "✓ Backed up $dirname" "$GREEN"
         fi
 
-        # Criar symlinks
+        # Copiar configurações para ~/.config
         cp -r "$dir" "$target_dir"
         print "✓ Copied $dirname to $target_dir" "$GREEN"
     fi
