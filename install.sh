@@ -67,7 +67,7 @@ for dir in $CONFIGS_DIR/*; do
         fi
 
         # Criar symlinks
-        cp -r "$dirname" "$target_dir"
+        cp -r "$dir" "$target_dir"
         print "✓ Copied $dirname to $target_dir" "$GREEN"
     fi
 done
